@@ -19,6 +19,17 @@ df = df.drop(columns=['Weekly_Gaming_Hours'])
 print(df.info())
 
 
+numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+for col in numeric_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    df[col] = df[col].clip(lower=lower_bound, upper=upper_bound)
+
+
 missing_values = df.isnull().sum()
 print("\nMissing Values per colonna:\n", missing_values[missing_values > 0])
 
