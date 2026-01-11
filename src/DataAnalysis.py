@@ -19,6 +19,7 @@ if 'User_ID' in df.columns:
     df = df.drop(columns=['User_ID'])
 if 'Weekly_Gaming_Hours' in df.columns:
     df = df.drop(columns=['Weekly_Gaming_Hours'])
+    df = df.drop(columns=['Productivity_Level'])
 print(df.info())
 
 print("\n--- Controllo Valori Mancanti (Null) ---")
@@ -81,9 +82,7 @@ for col in target_outlier_cols:
         upper_bound = Q3 + 1.5 * IQR
 
         outliers_train_count = ((X_train[col] < lower_bound) | (X_train[col] > upper_bound)).sum()
-        X_train[col] = X_train[col].clip(lower=lower_bound, upper=upper_bound)
-        X_test[col] = X_test[col].clip(lower=lower_bound, upper=upper_bound)
-        print(f"Colonna '{col}': trovati {outliers_train_count} outliers nel Train -> Applicato Clipping.")
+        print(f"Colonna '{col}': trovati {outliers_train_count} ")
 
 
 
@@ -242,7 +241,7 @@ print("PARTE 2: REGRESSIONE (Target: Academic_or_Work_Score)")
 print("="*60)
 print("Nota: Rimuoviamo 'Productivity_Level' dalle feature per evitare Data Leakage (correlazione ~96%)")
 
-X_reg = df.drop(['Performance_Impact', 'Academic_or_Work_Score', 'Productivity_Level'], axis=1)
+X_reg = df.drop(['Performance_Impact', 'Academic_or_Work_Score'], axis=1)
 y_reg = df['Academic_or_Work_Score']
 
 
@@ -294,3 +293,34 @@ plt.title('Performance Modello di Regressione (Random Forest)', fontsize=16)
 plt.ylabel('Valore')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.show()
+
+print("\n--- Analisi Feature Importance (Regressione) ---")
+
+
+importances_reg = rf_regressor.feature_importances_
+
+
+feature_names_reg = X_reg.columns
+
+
+feature_importance_reg_df = pd.DataFrame({
+    'Feature': feature_names_reg,
+    'Importance': importances_reg
+})
+
+
+feature_importance_reg_df = feature_importance_reg_df.sort_values(by='Importance', ascending=False)
+
+
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Importance', y='Feature', data=feature_importance_reg_df)
+plt.title('Importanza delle Feature nel Modello di Regressione\n(Target: Academic_or_Work_Score)', fontsize=14)
+plt.xlabel('Importanza (Gini Importance)')
+plt.ylabel('Feature')
+plt.grid(axis='x', linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
+
+print("Top 5 Feature più influenti sul punteggio:")
+print(feature_importance_reg_df.head(5).to_string(index=False))
