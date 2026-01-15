@@ -2,8 +2,6 @@
 # Gaming Hours vs. Academic & Work Performance
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Libreria](https://img.shields.io/badge/Library-Scikit--Learn-orange)
-![Tecnica](https://img.shields.io/badge/Technique-SMOTENC-green)
 ![Stato](https://img.shields.io/badge/Status-Completato-brightgreen)
 
 ## 📋 Panoramica del Progetto
@@ -95,6 +93,7 @@ pip install pandas numpy seaborn matplotlib scikit-learn imbalanced-learn
 ```bash
 python analysis_script.py
 ```
+
 
 
 
