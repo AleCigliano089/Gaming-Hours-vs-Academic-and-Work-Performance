@@ -14,6 +14,36 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 df = pd.read_csv('Gaming_Hours_vs_Performance.csv', sep=';')
 
+numeric_df = df.select_dtypes(include=['float64', 'int64'])
+
+
+corr_matrix = numeric_df.corr()
+
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5)
+plt.title('Matrice di Correlazione delle Variabili Numeriche')
+plt.show()
+
+
+sns.set(style="whitegrid")
+
+plt.figure(figsize=(10, 6))
+sns.countplot(x='Gender', hue='Performance_Impact', data=df)
+plt.title('Distribuzione dell\'Impatto sulle Performance per Genere')
+plt.show()
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Performance_Impact', y='Daily_Gaming_Hours', data=df)
+plt.title('Relazione tra Ore di Gioco Giornaliere e Impatto')
+plt.show()
+
+
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='Performance_Impact', y='Sleep_Hours', data=df)
+plt.title('Relazione tra Ore di Sonno e Impatto')
+plt.show()
+
 print("Info Dataset:")
 if 'User_ID' in df.columns:
     df = df.drop(columns=['User_ID'])
@@ -21,6 +51,8 @@ if 'Weekly_Gaming_Hours' in df.columns:
     df = df.drop(columns=['Weekly_Gaming_Hours'])
     df = df.drop(columns=['Productivity_Level'])
 print(df.info())
+
+
 
 print("\n--- Controllo Valori Mancanti (Null) ---")
 null_counts = df.isnull().sum()
