@@ -365,3 +365,4 @@ plt.show()
 
 print("Top 5 Feature più influenti sul punteggio:")
 print(feature_importance_reg_df.head(5).to_string(index=False))
+plt.close('all')
